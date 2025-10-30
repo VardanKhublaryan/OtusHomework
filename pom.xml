@@ -13,7 +13,6 @@
     <maven.compiler.target>21</maven.compiler.target>
     <maven.surefire.version>3.5.3</maven.surefire.version>
     <maven.compiler.version>3.14.0</maven.compiler.version>
-    <maven.spotbugs.version>4.9.3.0</maven.spotbugs.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <selenium.version>4.34.0</selenium.version>
     <guice.version>7.0.0</guice.version>
