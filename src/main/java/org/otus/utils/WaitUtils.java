@@ -36,19 +36,5 @@ public class WaitUtils {
       wait.until(ExpectedConditions.visibilityOfAllElements(webElement));
    }
 
-   public void waitUnTillPageReady() {
-      wait.until((ExpectedCondition<Boolean>) wd ->
-      {
-         assert wd != null;
-         return Objects.equals(((JavascriptExecutor) wd).executeScript("return document.readyState"),
-             "complete");
-      });
-   }
-
-   public void waitUnTillPageLoaded() {
-      waitUnTillPageReady();
-      wait.until(driver -> Objects.equals(((JavascriptExecutor) driver)
-          .executeScript("return typeof jQuery != 'function' || jQuery.active == 0"), true));
-   }
 
 }
