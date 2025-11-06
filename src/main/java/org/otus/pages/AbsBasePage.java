@@ -12,14 +12,12 @@ public class AbsBasePage <T extends AbsCommon<T>> extends AbsCommon<T> {
 
    public AbsBasePage(WebDriver driver) {
       super(driver);
-      waitUtils.waitUnTillPageLoaded();
    }
 
    @SuppressWarnings("unchecked")
    public T openPage() {
       driver.get(BASE_URL + getPath());
-      new JsUtils(driver).addCookie();
-      waitUtils.waitUnTillPageLoaded();
+      new JsUtils(driver).closePopUp();
       return (T) this;
    }
 

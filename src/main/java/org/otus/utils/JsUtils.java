@@ -17,7 +17,7 @@ public class JsUtils {
           element);
    }
 
-   public void addCookie() {
+   public void closePopUp() {
       JavascriptExecutor js = (JavascriptExecutor) driver;
       WebElement acceptButton = (WebElement) js.executeScript(
           "return Array.from(document.querySelectorAll('button, a, div')).find(e => " +
