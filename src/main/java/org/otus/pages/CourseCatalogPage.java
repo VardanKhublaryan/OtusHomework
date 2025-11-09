@@ -2,6 +2,8 @@ package org.otus.pages;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -28,6 +30,8 @@ public class CourseCatalogPage extends AbsBasePage<CourseCatalogPage> {
    private List<WebElement> coursesDates;
    @FindBy(xpath = "//*[@id='__next']/div[1]/main/div/section[1]/div/div/div/div/div")
    private List<WebElement> courses;
+
+   private static final Random RANDOM = new Random();
 
    public CourseCatalogPage(WebDriver driver) {
       super(driver);
@@ -57,35 +61,46 @@ public class CourseCatalogPage extends AbsBasePage<CourseCatalogPage> {
 
    public String getCourseName() {
       waitUtils.waitUnTillElementsVisible(coursesNames);
-      int index = new Random().nextInt(0, coursesNames.size());
+      int index = RANDOM.nextInt(0, coursesNames.size());
       return getText(coursesNames.get(index));
    }
 
    public List<WebElement> getCoursesByDate(CourseDateType type) {
       DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMMM, yyyy", new Locale("ru"));
 
-      List<LocalDate> dates = coursesDates.stream()
-          .map(course -> {
-             String dateText = course.getText().trim().split(" · ")[0].trim();
-             return LocalDate.parse(dateText, formatter);
-          })
-          .toList();
+      List<LocalDate> dates = new ArrayList<>();
+      List<WebElement> validCourses = new ArrayList<>();
+
+      for (WebElement course : coursesDates) {
+         String dateText = course.getText().trim().split(" · ")[0].trim();
+
+         if (dateText.equals("О дате старта будет объявлено позже")) {
+            continue;
+         }
+         LocalDate date = LocalDate.parse(dateText, formatter);
+         dates.add(date);
+         validCourses.add(course);
+      }
 
       if (dates.isEmpty()) {
          return List.of();
       }
 
       LocalDate targetDate = (type == CourseDateType.EARLIEST)
-          ? dates.stream().reduce((d1, d2) -> d1.isBefore(d2) ? d1 : d2).get()
-          : dates.stream().reduce((d1, d2) -> d1.isAfter(d2) ? d1 : d2).get();
+          ? dates.stream().min(LocalDate::compareTo).get()
+          : dates.stream().max(LocalDate::compareTo).get();
 
-      return coursesDates.stream()
-          .filter(course -> {
-             String dateText = course.getText().trim().split(" · ")[0].trim();
-             return LocalDate.parse(dateText, formatter).equals(targetDate);
-          })
-          .toList();
+      List<WebElement> result = new ArrayList<>();
+      for (int i = 0; i < dates.size(); i++) {
+         if (dates.get(i).equals(targetDate)) {
+            result.add(validCourses.get(i));
+         }
+      }
+
+      return result;
    }
+
+
 
    public boolean isCourseModelInPage(WebElement courseDate) {
       Document doc = Jsoup.parse(Objects.requireNonNull(driver.getPageSource()));
@@ -97,14 +112,21 @@ public class CourseCatalogPage extends AbsBasePage<CourseCatalogPage> {
 
    public WebElement getOpenedCourseByName(String courseName) {
       waitUtils.waitUnTillElementsVisible(courses);
+
+      String cleanCourseName = courseName.replaceAll("\\s*\\(\\d+\\)$", "").trim();
+
       return courses.stream()
-          .filter(course -> getText(course)
-              .replaceAll("\\s+", " ")
-              .trim()
-              .equalsIgnoreCase(courseName.replaceAll("\\s+", " ").trim()))
+          .filter(course -> {
+             String text = getText(course)
+                 .replaceAll("\\s+", " ")
+                 .replaceAll("\\s*\\(\\d+\\)$", "") // remove "(number)" from element text
+                 .trim();
+             return text.equalsIgnoreCase(cleanCourseName);
+          })
           .findFirst()
           .orElseThrow(() -> new RuntimeException("Course not found: " + courseName));
    }
+
 
    public boolean isCourseSelected(WebElement webElement) {
       return getElementAttribute(webElement, "value").equals("true");

@@ -12,12 +12,15 @@
     <maven.compiler.source>21</maven.compiler.source>
     <maven.compiler.target>21</maven.compiler.target>
     <maven.surefire.version>3.5.3</maven.surefire.version>
+    <maven.checkstyle.version>3.6.0</maven.checkstyle.version>
+    <maven.spotbugs.version>4.9.3.0</maven.spotbugs.version>
     <maven.compiler.version>3.14.0</maven.compiler.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <selenium.version>4.34.0</selenium.version>
     <guice.version>7.0.0</guice.version>
     <junit.version>5.12.1</junit.version>
     <guava.version>32.1.2-jre</guava.version>
+    <maven.plugin.version>3.2.5</maven.plugin.version>
     <assertj.version>3.27.3</assertj.version>
     <jsoup.version>1.18.3</jsoup.version>
   </properties>
@@ -61,35 +64,68 @@
     </dependency>
 
   </dependencies>
-
   <build>
-  <plugins>
-  <plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-compiler-plugin</artifactId>
-    <version>${maven.compiler.version}</version>
-    <configuration>
-      <target>${maven.compiler.target}</target>
-      <source>${maven.compiler.source}</source>
-    </configuration>
-  </plugin>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${maven.compiler.version}</version>
+        <configuration>
+          <target>${maven.compiler.target}</target>
+          <source>${maven.compiler.source}</source>
+        </configuration>
+      </plugin>
 
-  <plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-surefire-plugin</artifactId>
-    <version>${maven.surefire.version}</version>
-    <configuration>
-      <systemPropertyVariables>
-        <browser>chrome</browser>
-        <baseUrl>https://otus.ru</baseUrl>
-        <junit.jupiter.execution.parallel.enabled>true</junit.jupiter.execution.parallel.enabled>
-        <junit.jupiter.execution.parallel.mode.default>concurrent</junit.jupiter.execution.parallel.mode.default>
-        <junit.jupiter.execution.parallel.mode.classes.default>concurrent
-        </junit.jupiter.execution.parallel.mode.classes.default>
-      </systemPropertyVariables>
-      <parallel>methods</parallel>
-    </configuration>
-  </plugin>
-  </plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${maven.surefire.version}</version>
+        <configuration>
+          <systemPropertyVariables>
+            <browser>chrome</browser>
+            <baseUrl>https://otus.ru</baseUrl>
+            <junit.jupiter.execution.parallel.enabled>true</junit.jupiter.execution.parallel.enabled>
+            <junit.jupiter.execution.parallel.mode.default>concurrent</junit.jupiter.execution.parallel.mode.default>
+            <junit.jupiter.execution.parallel.mode.classes.default>concurrent
+            </junit.jupiter.execution.parallel.mode.classes.default>
+          </systemPropertyVariables>
+          <parallel>methods</parallel>
+
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>${maven.checkstyle.version}</version>
+        <configuration>
+          <includeTestSourceDirectory>true</includeTestSourceDirectory>
+          <configLocation>${project.build.sourceDirectory}/../resources/checkstyle.xml</configLocation>
+        </configuration>
+        <executions>
+          <execution>
+            <id>analyze-compile</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
+        <version>${maven.spotbugs.version}</version>
+        <executions>
+          <execution>
+            <id>analyze-compile</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
 </project>

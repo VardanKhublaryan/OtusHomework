@@ -6,7 +6,7 @@ import org.otus.common.AbsCommon;
 import org.otus.utils.AnnotationUtils;
 import org.otus.utils.JsUtils;
 
-public class AbsBasePage <T extends AbsCommon<T>> extends AbsCommon<T> {
+public class AbsBasePage<T extends AbsCommon<T>> extends AbsCommon<T> {
 
    private final static String BASE_URL = System.getProperty("baseUrl", "https://otus.ru");
 
