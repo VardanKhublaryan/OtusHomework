@@ -20,8 +20,8 @@ public class JsUtils {
    public void closePopUp() {
       JavascriptExecutor js = (JavascriptExecutor) driver;
       WebElement acceptButton = (WebElement) js.executeScript(
-          "return Array.from(document.querySelectorAll('button, a, div')).find(e => " +
-              "e.innerText && e.innerText.trim().toLowerCase().includes('ok'));"
+          "return Array.from(document.querySelectorAll('button, a, div')).find(e => "
+              + "e.innerText && e.innerText.trim().toLowerCase().includes('ok'));"
       );
 
       if (acceptButton != null) {

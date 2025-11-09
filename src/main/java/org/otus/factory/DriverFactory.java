@@ -13,12 +13,11 @@ public class DriverFactory {
    private final String browserName = System.getProperty("browser", "chrome").toLowerCase();
 
    public WebDriver create() {
-      WebDriver driver = switch (browserName) {
+      WebDriver driver = switch (browserName){
          case "chrome" -> new ChromeDriver(new BrowserSettings().chromeSettings());
          case "firefox" -> new FirefoxDriver(new BrowserSettings().firefoxSettings());
          default -> throw new BrowserNotSupportedException(browserName);
       };
       return new EventFiringDecorator<>(new MouseListeners()).decorate(driver);
    }
-
 }

@@ -1,12 +1,12 @@
 import static org.otus.pages.CourseCatalogPage.CourseDateType.EARLIEST;
 import static org.otus.pages.CourseCatalogPage.CourseDateType.LATEST;
+
 import com.google.inject.Inject;
 import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-
 import org.openqa.selenium.WebElement;
 import org.otus.components.HeaderComponent;
 import org.otus.components.TrainingComponent;

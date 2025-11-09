@@ -7,7 +7,6 @@ import org.otus.annotations.ComponentAnnotation.Component;
 import org.otus.common.AbsCommon;
 import org.otus.utils.AnnotationUtils;
 
-
 public abstract class AbsBaseComponent extends AbsCommon<AbsBaseComponent> {
 
    public AbsBaseComponent(WebDriver driver) {

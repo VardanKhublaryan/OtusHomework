@@ -18,11 +18,13 @@ public class TrainingComponent extends AbsBaseComponent{
    @FindBy(xpath = "//nav//div[3]//div//div//div[1]//div//div//a")
    public List<WebElement> courcesList;
 
+   private static final Random RANDOM = new Random();
+
    public String clickOnRandomCourseAndReturnName() {
-      verifyComponentLoaded();
-      int index = new Random().nextInt(courcesList.size());
-      String name = getText(courcesList.get(index)).split(" \\(")[0];
-      scrollAndClickOnElement(courcesList.get(index));
+      int index = RANDOM.nextInt(courcesList.size());
+      WebElement course = courcesList.get(index);
+      String name = course.getText();
+      course.click();
       return name;
    }
 

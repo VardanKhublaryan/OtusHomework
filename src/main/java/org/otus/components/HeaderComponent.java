@@ -5,7 +5,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.otus.annotations.ComponentAnnotation.Component;
 
-@Component("xpath://*[@id='__next']/div[1]/div[3]/div")
+@Component("css:span[title='Обучение']")
 public class HeaderComponent extends AbsBaseComponent{
 
    @FindBy(css = "span[title='Обучение']")
