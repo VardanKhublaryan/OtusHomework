@@ -1,21 +1,26 @@
 package org.otus.pages;
 
+import com.google.inject.Inject;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
+import java.util.stream.Collectors;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.otus.annotations.PathAnnotation.Path;
+import org.otus.support.GuiceScoped;
+import org.otus.utils.JsUtils;
 
 @Path("/catalog/courses")
 public class CourseCatalogPage extends AbsBasePage<CourseCatalogPage> {
@@ -30,16 +35,22 @@ public class CourseCatalogPage extends AbsBasePage<CourseCatalogPage> {
    private List<WebElement> coursesDates;
    @FindBy(xpath = "//*[@id='__next']/div[1]/main/div/section[1]/div/div/div/div/div")
    private List<WebElement> courses;
+   @FindBy(xpath = "//*[@id='__next']/div[1]/main/div/section[1]/div[3]/div[2]/div/div/div[4]/div")
+   private WebElement onboardingCourses;
+   @FindBy(xpath = "//main//section[2]//a")
+   List<WebElement> courseLinks;
 
    private static final Random RANDOM = new Random();
 
-   public CourseCatalogPage(WebDriver driver) {
-      super(driver);
+   @Inject
+   public CourseCatalogPage(GuiceScoped guiceScoped) {
+      super(guiceScoped);
    }
 
    public CourseCatalogPage clickOnCourse(String courseName) {
 
-      WebElement webElement = driver.findElements(By.xpath("//main//section[2]//a")).stream()
+      WebElement webElement = guiceScoped.getDriver()
+          .findElements(By.xpath("//main//section[2]//a")).stream()
           .filter(WebElement::isDisplayed)
           .filter(course -> getText(course)
               .replaceAll("\\s+", " ")
@@ -57,6 +68,11 @@ public class CourseCatalogPage extends AbsBasePage<CourseCatalogPage> {
       clickOnElement(searchBtn);
       sendText(searchField, courseName);
       return this;
+   }
+
+   public void clickInOnboardingCourses() {
+      new JsUtils(guiceScoped.getDriver()).scrollIntoView(onboardingCourses);
+      clickOnElement(onboardingCourses);
    }
 
    public String getCourseName() {
@@ -100,10 +116,40 @@ public class CourseCatalogPage extends AbsBasePage<CourseCatalogPage> {
       return result;
    }
 
+   public Map<String, String> getAllCoursesPricesAndNames() {
 
+      try {
+         Thread.sleep(4000);
+      }catch (InterruptedException ignored){
+         System.err.println("Thread interrupted");
+      }
+      Map<String, String> courses = new HashMap<>();
+      List<String> courseHrefs = this.courseLinks.stream()
+          .map(link -> link.getAttribute("href"))
+          .filter(Objects::nonNull)
+          .filter(href -> !href.isEmpty())
+          .filter(href -> href.startsWith("http"))
+          .collect(Collectors.toList());
+
+      for (String href : courseHrefs) {
+         try {
+            Document doc = Jsoup.connect(href).get();
+
+            String courseTitle = doc.select("main h3").first().text();
+            String coursePrice = doc.select(".sc-153sikp-11.gztHyx:matchesOwn(\\d+\\s*₽)").first().text();
+
+            courses.put(courseTitle, coursePrice);
+
+         } catch (Exception e) {
+            System.err.println("Failed to load: " + href);
+            e.printStackTrace();
+         }
+      }
+      return courses;
+   }
 
    public boolean isCourseModelInPage(WebElement courseDate) {
-      Document doc = Jsoup.parse(Objects.requireNonNull(driver.getPageSource()));
+      Document doc = Jsoup.parse(Objects.requireNonNull(guiceScoped.getDriver().getPageSource()));
       String courseDateText = courseDate.getText().trim();
       String query = String.format("div:contains(%s)", courseDateText);
       Element element = doc.select(query).first();
@@ -119,7 +165,7 @@ public class CourseCatalogPage extends AbsBasePage<CourseCatalogPage> {
           .filter(course -> {
              String text = getText(course)
                  .replaceAll("\\s+", " ")
-                 .replaceAll("\\s*\\(\\d+\\)$", "") // remove "(number)" from element text
+                 .replaceAll("\\s*\\(\\d+\\)$", "")
                  .trim();
              return text.equalsIgnoreCase(cleanCourseName);
           })

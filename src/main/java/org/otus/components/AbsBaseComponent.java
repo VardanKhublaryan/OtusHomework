@@ -1,20 +1,19 @@
 package org.otus.components;
 
-
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.otus.annotations.ComponentAnnotation.Component;
 import org.otus.common.AbsCommon;
+import org.otus.support.GuiceScoped;
 import org.otus.utils.AnnotationUtils;
 
 public abstract class AbsBaseComponent extends AbsCommon<AbsBaseComponent> {
 
-   public AbsBaseComponent(WebDriver driver) {
-      super(driver);
+   public AbsBaseComponent(GuiceScoped guiceScoped) {
+      super(guiceScoped);
    }
 
    public void verifyComponentLoaded() {
-      waitUtils.waitUnTillElementVisible(driver.findElement(getComponentSelector()));
+      waitUtils.waitUnTillElementVisible(guiceScoped.getDriver().findElement(getComponentSelector()));
    }
 
    public By getComponentSelector() {

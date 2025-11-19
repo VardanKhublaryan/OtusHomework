@@ -2,25 +2,22 @@ package org.otus.utils;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.Objects;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.otus.support.GuiceScoped;
 
 public class WaitUtils {
 
-   private WebDriver driver;
+   private GuiceScoped guiceScoped;
    private WebDriverWait wait;
 
-   public WaitUtils(WebDriver driver) {
-      this.driver = driver;
+   public WaitUtils(GuiceScoped guiceScoped) {
+      this.guiceScoped = guiceScoped;
    }
 
    public WaitUtils getWaitReference() {
-      wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+      wait = new WebDriverWait(guiceScoped.getDriver(), Duration.ofSeconds(15));
       return this;
    }
 

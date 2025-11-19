@@ -1,22 +1,23 @@
 package org.otus.common;
 
-import org.openqa.selenium.WebDriver;
+import com.google.inject.Inject;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
+import org.otus.support.GuiceScoped;
 import org.otus.utils.ActionUtils;
 import org.otus.utils.JsUtils;
 import org.otus.utils.WaitUtils;
 
 public abstract class AbsCommon<T extends AbsCommon<T>> {
-   protected WebDriver driver;
+   protected GuiceScoped guiceScoped;
    protected ActionUtils actionUtils;
    protected WaitUtils waitUtils;
 
-   public AbsCommon(WebDriver driver) {
-      this.driver = driver;
-      this.waitUtils = new WaitUtils(driver).getWaitReference();
-      this.actionUtils = new ActionUtils(driver);
-      PageFactory.initElements(driver, this);
+   public AbsCommon(GuiceScoped guiceScoped) {
+      this.guiceScoped = guiceScoped;
+      this.waitUtils = new WaitUtils(guiceScoped).getWaitReference();
+      this.actionUtils = new ActionUtils(guiceScoped);
+      PageFactory.initElements(guiceScoped.getDriver(), this);
    }
 
    @SuppressWarnings("unchecked")
@@ -31,7 +32,7 @@ public abstract class AbsCommon<T extends AbsCommon<T>> {
    protected T scrollAndClickOnElement(WebElement element) {
       waitUtils.waitUnTillElementVisible(element);
       waitUtils.waitUnTillElementBeClickable(element);
-      new JsUtils(driver).scrollIntoView(element);
+      new JsUtils(guiceScoped.getDriver()).scrollIntoView(element);
       element.click();
       return (T) this;
    }
