@@ -12,6 +12,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -72,8 +73,11 @@ public class CourseCatalogPage extends AbsBasePage<CourseCatalogPage> {
       List<WebElement> validCourses = new ArrayList<>();
 
       for (WebElement course : coursesDates) {
-         String dateText = course.getText().trim().split(" · ")[0].trim();
+         try {
+            Thread.sleep(5000);
+         }catch (InterruptedException e) {}
 
+         String dateText = course.getText().trim().split(" · ")[0].trim();
          if (dateText.equals("О дате старта будет объявлено позже")) {
             continue;
          }

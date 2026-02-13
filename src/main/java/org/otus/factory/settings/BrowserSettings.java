@@ -9,10 +9,14 @@ public class BrowserSettings {
 
    public ChromeOptions chromeSettings() {
       ChromeOptions options = new ChromeOptions();
-      options.addArguments("start-maximized");
+      options.setCapability("browserName", "chrome");
       Map<String, Object> selenoidOptions = new HashMap<>();
       selenoidOptions.put("enableVNC", true);
+      selenoidOptions.put("sessionTimeout", "7m");
       options.setCapability("selenoid:options", selenoidOptions);
+      options.addArguments("start-maximized");
+      options.setCapability("browserVersion", "128.0");
+
       return options;
    }
 

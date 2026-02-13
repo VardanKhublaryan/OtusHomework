@@ -18,7 +18,8 @@ public abstract class AbsBaseComponent extends AbsCommon<AbsBaseComponent> {
    }
 
    public By getComponentSelector() {
-      String[] selector = new AnnotationUtils().getAnnotationInstance(this.getClass(), Component.class).value().split(":");
+      String[] selector = new AnnotationUtils().getAnnotationInstance(this.getClass(),
+          Component.class).value().split(":");
       return switch (selector[0].trim()) {
          case "css" -> By.cssSelector(selector[1].trim());
          case "xpath" -> By.xpath(selector[1].trim());

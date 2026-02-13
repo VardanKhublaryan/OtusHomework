@@ -8,6 +8,7 @@ import org.otus.utils.JsUtils;
 import org.otus.utils.WaitUtils;
 
 public abstract class AbsCommon<T extends AbsCommon<T>> {
+
    protected WebDriver driver;
    protected ActionUtils actionUtils;
    protected WaitUtils waitUtils;
