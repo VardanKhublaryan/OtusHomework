@@ -23,6 +23,10 @@
     <maven.plugin.version>3.2.5</maven.plugin.version>
     <assertj.version>3.27.3</assertj.version>
     <jsoup.version>1.18.3</jsoup.version>
+    <browser>chrome</browser>
+    <run.mode>remote</run.mode>
+    <remote.url>http://188.130.251.59:4444/wd/hub</remote.url>
+    <baseUrl>https://otus.ru</baseUrl>
   </properties>
 
   <dependencies>
@@ -86,10 +90,13 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>${maven.surefire.version}</version>
+
         <configuration>
           <systemPropertyVariables>
-            <browser>firefox</browser>
-            <baseUrl>https://otus.ru</baseUrl>
+            <run.mode>${run.mode}</run.mode>
+            <browser>${browser}</browser>
+            <remote.url>${remote.url}</remote.url>
+            <baseUrl>${baseUrl}</baseUrl>
             <junit.jupiter.execution.parallel.enabled>true</junit.jupiter.execution.parallel.enabled>
             <junit.jupiter.execution.parallel.mode.default>concurrent</junit.jupiter.execution.parallel.mode.default>
             <junit.jupiter.execution.parallel.mode.classes.default>concurrent</junit.jupiter.execution.parallel.mode.classes.default>
