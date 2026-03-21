@@ -42,6 +42,7 @@ pipeline {
                 reportBuildPolicy: 'ALWAYS',
                 results: [[path: 'target/allure-results']]
             ])
+            archiveArtifacts artifacts: 'target/allure-results/**', allowEmptyArchive: true
             echo "Pipeline finished"
         }
     }
