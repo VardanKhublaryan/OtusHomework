@@ -35,6 +35,7 @@ pipeline {
         always {
             echo "Publishing Allure results..."
             // The allure step automatically handles the 'allure generate' logic
+            archiveArtifacts artifacts: 'target/allure-results/**', allowEmptyArchive: true
             allure([
                 includeProperties: false,
                 jdk: '',
